@@ -1,161 +1,71 @@
-'use client'
-import { useState } from "react";
-import {
-  Layout,
-  Table,
-  Button,
-  Modal,
-  Form,
-  Input,
-  Space,
-  Popconfirm,
-  message,
-} from "antd";
-import type { ColumnsType } from "antd/es/table";
-import "antd/dist/reset.css"; // use 'antd/dist/antd.css' for older versions
+"use client";
 
-const { Header, Content } = Layout;
+import { useMemo, useState } from "react";
 
-type User = {
-  key: string;
-  name: string;
-  email: string;
-  role: string;
-};
+type Result = { id: string; title: string; snippet: string; type: "PDF" | "FAQ" | "Link" };
+
+const MOCK: Result[] = [
+  { id: "1", title: "How to onboard", snippet: "Steps to onboard new hires...", type: "FAQ" },
+  { id: "2", title: "Company Handbook (PDF)", snippet: "Full handbook for employees...", type: "PDF" },
+  { id: "3", title: "Team blog", snippet: "Recent updates from the team...", type: "Link" },
+];
 
 export default function Home() {
-  const [data, setData] = useState<User[]>([
-    { key: "1", name: "Alice", email: "alice@example.com", role: "admin" },
-    { key: "2", name: "Bob", email: "bob@example.com", role: "editor" },
-  ]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editing, setEditing] = useState<User | null>(null);
-  const [form] = Form.useForm();
+  const [q, setQ] = useState("");
+  const [filter, setFilter] = useState<"ALL" | Result["type"]>("ALL");
 
-  const openCreate = () => {
-    setEditing(null);
-    form.resetFields();
-    setIsModalOpen(true);
-  };
-
-  const openEdit = (record: User) => {
-    setEditing(record);
-    form.setFieldsValue(record);
-    setIsModalOpen(true);
-  };
-
-  const handleDelete = (key: string) => {
-    setData((prev) => prev.filter((r) => r.key !== key));
-    message.success("Deleted");
-  };
-
-  const handleOk = async () => {
-    const values = await form.validateFields();
-    if (editing) {
-      setData((prev) => prev.map((r) => (r.key === editing.key ? { ...r, ...values } : r)));
-      message.success("Updated");
-    } else {
-      const newItem: User = { key: String(Date.now()), ...values };
-      setData((prev) => [newItem, ...prev]);
-      message.success("Created");
-    }
-    setIsModalOpen(false);
-  };
-
-  const columns: ColumnsType<User> = [
-    { title: "Name", dataIndex: "name", key: "name" },
-    { title: "Email", dataIndex: "email", key: "email" },
-    { title: "Role", dataIndex: "role", key: "role" },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_, record) => (
-        <Space>
-          <Button type="link" onClick={() => openEdit(record)}>
-            Edit
-          </Button>
-          <Popconfirm
-            title="Delete this user?"
-            onConfirm={() => handleDelete(record.key)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button danger type="link">
-              Delete
-            </Button>
-          </Popconfirm>
-        </Space>
-      ),
-    },
-  ];
-
-  // Simple client-side guard (demo only). Replace with NextAuth/middleware for real security.
-  const isAuthenticated = Boolean(typeof window !== "undefined" && localStorage.getItem("admin_token"));
-
-  if (!isAuthenticated) {
-    return (
-      <Layout style={{ minHeight: "100vh" }}>
-        <Header style={{ color: "white" }}>Admin Dashboard — Sign In</Header>
-        <Content style={{ padding: 24 }}>
-          <Button
-            type="primary"
-            onClick={() => {
-              localStorage.setItem("admin_token", "demo");
-              message.success("Signed in (demo)");
-              // refresh to show dashboard
-              window.location.reload();
-            }}
-          >
-            Sign in (demo)
-          </Button>
-          <p style={{ marginTop: 12 }}>
-            This is a demo guard. Use NextAuth, JWT cookie, or middleware for production auth.
-          </p>
-        </Content>
-      </Layout>
-    );
-  }
+  const results = useMemo(() => {
+    const term = q.trim().toLowerCase();
+    return MOCK.filter((r) => (filter === "ALL" ? true : r.type === filter) && (!term || r.title.toLowerCase().includes(term) || r.snippet.toLowerCase().includes(term)));
+  }, [q, filter]);
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Header style={{ color: "white" }}>Admin Dashboard</Header>
-      <Content style={{ padding: 24 }}>
-        <Space style={{ marginBottom: 16 }}>
-          <Button type="primary" onClick={openCreate}>
-            New User
-          </Button>
-          <Button
-            onClick={() => {
-              // Example: sync with backend here
-              message.info("Syncing with server (demo)");
-            }}
-          >
-            Sync
-          </Button>
-        </Space>
+    <main className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="w-full max-w-2xl">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-semibold text-gray-900">InsightEngine</h1>
+          <p className="text-sm text-gray-500">Instant access to institutional knowledge</p>
+        </div>
 
-        <Table columns={columns} dataSource={data} />
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="flex gap-2">
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Search documents, FAQs, links..."
+              className="flex-1 border rounded-md px-4 py-3 focus:outline-none focus:shadow-md transition-shadow"
+            />
+            <button onClick={() => setQ("")} className="px-4 py-3 bg-indigo-600 text-white rounded-md">
+              Clear
+            </button>
+          </div>
 
-        <Modal
-          title={editing ? "Edit User" : "Create User"}
-          open={isModalOpen}
-          onOk={handleOk}
-          onCancel={() => setIsModalOpen(false)}
-          okText={editing ? "Update" : "Create"}
-        >
-          <Form form={form} layout="vertical">
-            <Form.Item name="name" label="Name" rules={[{ required: true }]}>
-              <Input />
-            </Form.Item>
-            <Form.Item name="email" label="Email" rules={[{ required: true, type: "email" }]}>
-              <Input />
-            </Form.Item>
-            <Form.Item name="role" label="Role" rules={[{ required: true }]}>
-              <Input />
-            </Form.Item>
-          </Form>
-        </Modal>
-      </Content>
-    </Layout>
+          <div className="mt-4 flex gap-2">
+            {(["ALL", "PDF", "FAQ", "Link"] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setFilter(t as any)}
+                className={`text-sm px-3 py-1 rounded-full border ${filter === t ? "bg-indigo-600 text-white" : "bg-white text-gray-700"}`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-6 space-y-3">
+            {results.length === 0 && <div className="text-gray-500">No results</div>}
+            {results.map((r) => (
+              <div key={r.id} className="p-4 border rounded-md bg-white">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium text-gray-900">{r.title}</h3>
+                  <span className="text-xs px-2 py-0.5 rounded bg-gray-100 text-gray-700">{r.type}</span>
+                </div>
+                <p className="mt-2 text-sm text-gray-600 line-clamp-3">{r.snippet}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
