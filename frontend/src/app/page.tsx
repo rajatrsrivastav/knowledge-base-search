@@ -15,7 +15,8 @@ function App() {
     if (!query) return;
     
     try {
-  const response = await fetch(`${process.env.API_URL || 'http://localhost:4000/api'}/search?q=${encodeURIComponent(query)}`);
+  const apiBase = process.env.API_URL || 'http://localhost:4000/api';
+  const response = await fetch(`${apiBase}/search?q=${encodeURIComponent(query)}`);
       const data = await response.json();
       setResults(data);
     } catch (error) {
