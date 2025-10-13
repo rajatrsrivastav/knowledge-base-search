@@ -10,7 +10,7 @@ function AdminPage() {
   const handleFaqSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:4000/api/faqs', {
+  const response = await fetch((process.env.API_URL || 'http://localhost:4000/api') + '/faqs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(faqData)
@@ -36,7 +36,7 @@ function AdminPage() {
     formData.append('file', pdfData.file);
 
     try {
-      const response = await fetch('http://localhost:4000/api/pdfs', {
+  const response = await fetch((process.env.API_URL || 'http://localhost:4000/api') + '/pdfs', {
         method: 'POST',
         body: formData
       });
