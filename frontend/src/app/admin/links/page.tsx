@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 type Link = { id: number; title: string; content: string };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export default function Links() {
   const [data, setData] = useState<Link[]>([]);

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 type Faq = { id: number; question: string; answer: string };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export default function Faqs() {
   const [data, setData] = useState<Faq[]>([]);

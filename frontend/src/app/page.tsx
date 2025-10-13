@@ -15,7 +15,7 @@ function App() {
     if (!query) return;
     
     try {
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+  const apiBase = process.env.NEXT_PUBLIC_API_URL;
   const response = await fetch(`${apiBase}/search?q=${encodeURIComponent(query)}`);
       const data = await response.json();
       setResults(data);
