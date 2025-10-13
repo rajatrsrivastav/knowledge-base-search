@@ -1,26 +1,22 @@
 "use client";
-
 import { Layout, Menu } from "antd";
 import Link from "next/link";
-import React from "react";
-
 const { Sider, Content } = Layout;
-
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider collapsible>
-        <div className="text-white p-4 font-semibold">InsightEngine</div>
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={["dashboard"]}>
-          <Menu.Item key="dashboard"><Link href="/admin">Dashboard</Link></Menu.Item>
-          <Menu.Item key="pdfs"><Link href="/admin/pdfs">PDFs</Link></Menu.Item>
-          <Menu.Item key="faqs">FAQs</Menu.Item>
-          <Menu.Item key="links">Links</Menu.Item>
-          <Menu.Item key="settings">Settings</Menu.Item>
-        </Menu>
+      <Sider width={190}>
+        <div style={{ color: 'white', padding: 12, fontSize: 14 }}>Admin</div>
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={["dash"]} items={[
+          { key: 'dash', label: <Link href="/admin">Dashboard</Link> },
+          { key: 'pdfs', label: <Link href="/admin/pdfs">PDFs</Link> },
+          { key: 'faqs', label: <Link href="/admin/faqs">FAQs</Link> },
+          { key: 'links', label: <Link href="/admin/links">Links</Link> },
+          { key: 'settings', label: <Link href="/admin/settings">Settings</Link> }
+        ]} />
       </Sider>
       <Layout>
-        <Content style={{ padding: 24 }}>{children}</Content>
+        <Content style={{ padding: 16 }}>{children}</Content>
       </Layout>
     </Layout>
   );

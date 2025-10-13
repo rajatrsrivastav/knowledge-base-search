@@ -1,34 +1,33 @@
 "use client";
-import { Table, Button, Modal, Form, Input, Upload, message } from "antd";
+import { Table, Button, Modal, Form, Input, message } from "antd";
 import { useState, useEffect } from "react";
-import { UploadOutlined } from "@ant-design/icons";
 
-type Pdf = { id: number; file_name: string };
+type Link = { id: number; title: string; content: string };
 
 const API_BASE = 'http://localhost:4000/api';
 
-export default function Pdfs() {
-  const [data, setData] = useState<Pdf[]>([]);
+export default function Links() {
+  const [data, setData] = useState<Link[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
 
-  const fetchPdfs = async () => {
+  const fetchLinks = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE}/pdfs`);
-      const pdfs = await response.json();
-      setData(pdfs);
+      const response = await fetch(`${API_BASE}/links`);
+      const links = await response.json();
+      setData(links);
     } catch (error) {
-      console.error('Error fetching PDFs:', error);
-      message.error('Failed to load PDFs');
+      console.error('Error fetching Links:', error);
+      message.error('Failed to load Links');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchPdfs();
+    fetchLinks();
   }, []);
 
   const handleAdd = () => {
@@ -39,25 +38,23 @@ export default function Pdfs() {
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      const formData = new FormData();
-      formData.append('title', values.title);
-      formData.append('file', values.file[0].originFileObj);
-
-      const response = await fetch(`${API_BASE}/pdfs`, {
+      
+      const response = await fetch(`${API_BASE}/links`, {
         method: 'POST',
-        body: formData
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values)
       });
 
       if (response.ok) {
-        message.success('PDF uploaded successfully');
+        message.success('Link added successfully');
         setIsModalOpen(false);
-        fetchPdfs();
+        fetchLinks();
       } else {
-        message.error('Failed to upload PDF');
+        message.error('Failed to add Link');
       }
     } catch (error) {
-      console.error('Upload failed:', error);
-      message.error('Upload failed');
+      console.error('Validation failed:', error);
+      message.error('Validation failed');
     }
   };
 
@@ -68,7 +65,7 @@ export default function Pdfs() {
   return (
     <>
       <div style={{ display:'flex', justifyContent:'space-between', marginBottom:12 }}>
-        <h3 style={{ fontSize:16 }}>PDFs</h3>
+        <h3 style={{ fontSize:16 }}>Links</h3>
         <Button type="primary" size="small" onClick={handleAdd}>Add New</Button>
       </div>
       <Table
@@ -79,12 +76,13 @@ export default function Pdfs() {
         pagination={{ pageSize: 10 }}
         columns={[
           { title:'ID', dataIndex:'id', width: 80 },
-          { title:'File Name', dataIndex:'file_name' },
+          { title:'Title', dataIndex:'title' },
+          { title:'Content', dataIndex:'content', render: (text: string) => text?.substring(0, 100) + '...' },
           { title:'Actions', render: () => <span style={{ fontSize:12 }}>Edit | Delete</span> }
         ]}
       />
       <Modal
-        title="Add New PDF"
+        title="Add New Link"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -93,19 +91,11 @@ export default function Pdfs() {
           <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Please enter a title' }]}>
             <Input />
           </Form.Item>
-          <Form.Item
-            name="file"
-            label="File"
-            valuePropName="fileList"
-            getValueFromEvent={(e) => {
-              if (Array.isArray(e)) return e;
-              return e && e.fileList;
-            }}
-            rules={[{ required: true, message: 'Please upload a file' }]}
-          >
-            <Upload beforeUpload={() => false} maxCount={1} accept=".pdf">
-              <Button icon={<UploadOutlined />}>Upload PDF</Button>
-            </Upload>
+          <Form.Item name="url" label="URL" rules={[{ required: true, message: 'Please enter a URL' }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="description" label="Description">
+            <Input.TextArea rows={3} />
           </Form.Item>
         </Form>
       </Modal>

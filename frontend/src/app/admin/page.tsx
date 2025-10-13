@@ -1,29 +1,14 @@
 "use client";
-
-import AdminLayout from "./layout";
 import { Card, Col, Row, Statistic } from "antd";
-
-export default function AdminPage() {
+export default function Dashboard() {
   return (
-    <AdminLayout>
-      <h2 style={{ marginBottom: 16 }}>Dashboard</h2>
-      <Row gutter={16}>
-        <Col span={8}>
-          <Card>
-            <Statistic title="Total PDFs" value={1240} />
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card>
-            <Statistic title="FAQs Indexed" value={542} />
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card>
-            <Statistic title="Links Tracked" value={321} />
-          </Card>
-        </Col>
+    <>
+      <h2 style={{ marginBottom: 12, fontSize: 18 }}>Dashboard</h2>
+      <Row gutter={12}>
+        <Col span={8}><Card size="small"><Statistic title="Total PDFs" value={120} /></Card></Col>
+        <Col span={8}><Card size="small"><Statistic title="FAQs" value={45} /></Card></Col>
+        <Col span={8}><Card size="small"><Statistic title="Links" value={78} /></Card></Col>
       </Row>
-    </AdminLayout>
+    </>
   );
 }

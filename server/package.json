@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsc -p tsconfig.json && node dist/index.js",
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "init-db": "tsc -p tsconfig.json && node dist/initDatabase.js"
   },
   "keywords": [],
   "author": "",
