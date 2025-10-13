@@ -34,6 +34,10 @@ const pool = new Pool(
 );
 const upload = multer({ dest: 'uploads/' });
 
+app.get('/',(req,res)=>{
+  res.json("Server is active")
+})
+
 app.get('/api/search', async (req: Request, res: Response) => {
   const query = req.query.q as string;
 

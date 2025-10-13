@@ -27,6 +27,9 @@ const pool = new Pool(process.env.DATABASE_URL
         port: parseInt(process.env.DB_PORT || '5432'),
     });
 const upload = multer({ dest: 'uploads/' });
+app.get('/', (req, res) => {
+    res.json("Server is active");
+});
 app.get('/api/search', async (req, res) => {
     const query = req.query.q;
     if (!query) {
