@@ -5,7 +5,7 @@ import { UploadOutlined } from "@ant-design/icons";
 
 type Pdf = { id: number; file_name: string };
 
-const API_BASE = process.env.API_URL || 'http://localhost:4000/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
 
 export default function Pdfs() {
   const [data, setData] = useState<Pdf[]>([]);
