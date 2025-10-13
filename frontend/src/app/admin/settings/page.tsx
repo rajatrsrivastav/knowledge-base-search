@@ -4,7 +4,13 @@ import { Form, Input, Button, Switch, Card } from "antd";
 export default function Settings() {
   const [form] = Form.useForm();
 
-  const onFinish = (values: any) => {
+  type SettingsValues = {
+    siteTitle?: string;
+    adminEmail?: string;
+    enableNotifications?: boolean;
+  };
+
+  const onFinish = (values: SettingsValues) => {
     console.log('Settings saved:', values);
   };
 

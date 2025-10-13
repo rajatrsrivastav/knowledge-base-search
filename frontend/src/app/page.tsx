@@ -2,9 +2,15 @@
 
 import React, { useState } from 'react';
 
+type SearchResult = {
+  title?: string;
+  source_type?: string;
+  relevance?: string | number;
+};
+
 function App() {
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
+  const [query, setQuery] = useState<string>('');
+  const [results, setResults] = useState<SearchResult[]>([]);
   const handleSearch = async () => {
     if (!query) return;
     
@@ -53,17 +59,17 @@ function App() {
 
       <div>
         {results.length > 0 ? (
-          results.map((result: any, index: number) => (
+          results.map((result: SearchResult, index: number) => (
             <div key={index} style={{ border: '1px solid #ccc', margin: '10px 0', padding: '15px', borderRadius: '4px' }}>
               <h3 style={{ margin: '0 0 10px 0', color: '#333' }}>{result.title}</h3>
               <p style={{ margin: '0', color: '#666' }}>Type: {result.source_type}</p>
               <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#888' }}>
-                Relevance: {parseFloat(result.relevance).toFixed(3)}
+                Relevance: {typeof result.relevance === 'string' ? parseFloat(result.relevance).toFixed(3) : (result.relevance ?? 0).toFixed(3)}
               </p>
             </div>
           ))
         ) : query ? (
-          <p>No results found for "{query}"</p>
+          <p>No results found for &quot;{query}&quot;</p>
         ) : (
           <p>Enter a search term to find documents</p>
         )}
