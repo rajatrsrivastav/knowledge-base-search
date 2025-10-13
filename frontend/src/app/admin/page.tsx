@@ -5,9 +5,9 @@ export default function Dashboard() {
     <>
       <h2 style={{ marginBottom: 12, fontSize: 18 }}>Dashboard</h2>
       <Row gutter={12}>
-        <Col span={8}><Card size="small"><Statistic title="Total PDFs" value={120} /></Card></Col>
-        <Col span={8}><Card size="small"><Statistic title="FAQs" value={45} /></Card></Col>
-        <Col span={8}><Card size="small"><Statistic title="Links" value={78} /></Card></Col>
+        <Col span={8}><Card size="small"><Statistic title="Total PDFs" value={1} /></Card></Col>
+        <Col span={8}><Card size="small"><Statistic title="FAQs" value={2} /></Card></Col>
+        <Col span={8}><Card size="small"><Statistic title="Links" value={1} /></Card></Col>
       </Row>
     </>
   );
